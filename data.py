@@ -347,7 +347,7 @@ IMAGEM_POR_BOMBA = {
 # --- Filtros ---
 IMAGEM_POR_FILTRO = {
     "SEM FILTRO": None,
-    "Filtro de 1" para Filtragem de Partículas Gp Company": "imagens_produtos/filtros/5332-1-filtro de linha.jpg",
+    "Filtro de 1 polegada para Filtragem de Partículas Gp Company": "imagens_produtos/filtros/5332-1-filtro de linha.jpg",
     "FOGUETINHO DESIDATRADOR 60LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR 100LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR 150LPM": "imagens_produtos/filtros/filtro_padrao.png",
