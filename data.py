@@ -233,6 +233,7 @@ BOMBAS: Dict[str, float] = {
 # ==================== FILTROS ====================
 FILTROS: Dict[str, float] = {
     "SEM FILTRO": 0.0,
+    "Filtro de 1 polegada para Filtragem de Partículas Gp Company": 350.00,
     "FOGUETINHO DESIDATRADOR 60LPM": 2190.0,
     "FOGUETINHO DESIDATRADOR 100LPM": 4190.0,
     "FOGUETINHO DESIDATRADOR 150LPM": 5190.0,
@@ -254,20 +255,14 @@ ELEMENTOS: Dict[str, float] = {
 OPCIONAIS: Dict[str, Dict[str, Any]] = {
     "DESCARGA SELADA 4''": {
         "preco": 3500.0,
-        "descricao": "Abastecimento do combustível no tanque realizado por baixo, pela válvula. Caso não opte por esta forma, o abastecimento será pela parte superior do tanque.",
-        "imagem": "imagens_produtos/opcionais/opcional-descarga selada 4''.jpeg",  # ou "imagens_produtos/opcionais/descarga.jpg"
+        "descricao": (
+            "Abastecimento do combustível no tanque realizado por baixo, "
+            "pela válvula. Caso não opte por esta forma, o abastecimento "
+            "será pela parte superior do tanque."
+        ),
+        # Prefira nome de arquivo SEM espaços e SEM aspas: descarga_selada_4.jpg
+        "imagem": "imagens_produtos/opcionais/descarga_selada_4.jpg",
     },
-    "ESCADA EXTERNA": {
-        "preco": 1200.0,
-        "descricao": "Escada metálica externa para acesso ao topo do tanque.",
-        "imagem": None,
-    },
-    "KIT CONEXÕES ESPECIAIS": {
-        "preco": 890.0,
-        "descricao": "Conjunto de conexões e registros extras sob medida.",
-        "imagem": None,
-    },
-    
     # Adicione mais opcionais abaixo, no mesmo formato:
     # "NOME DO OPCIONAL": {
     #     "preco": 0.0,
@@ -374,13 +369,13 @@ IMAGEM_POR_BOMBA = {
 # --- Filtros ---
 IMAGEM_POR_FILTRO = {
     "SEM FILTRO": None,
+    "Filtro de 1 polegada para Filtragem de Partículas Gp Company": "imagens_produtos/filtros/5332-1-filtro de linha.jpg",
     "FOGUETINHO DESIDATRADOR 60LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR 100LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR 150LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO COALESCENTE 100LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR DUPLO 100LPM": "imagens_produtos/filtros/filtro_padrao.png",
 }
-
 
 def get_imagem_tanque(tanque_key: str):
     """Caminho da foto do tanque (ou padrão)."""
