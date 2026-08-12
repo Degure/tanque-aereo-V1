@@ -6,6 +6,7 @@ import json
 import os
 from datetime import datetime, timedelta
 from typing import List
+import pandas as pd
 
 from data import (
     TANQUES, BACIAS, BOMBAS, FILTROS, ELEMENTOS, OPCIONAIS,
@@ -260,6 +261,67 @@ with col_d3:
     fluido = st.text_input("Fluido a ser armazenado", value="Diesel")
     obs_gerais = st.text_area("Observações gerais (aparecem no PDF)", value="", height=80)
 
+# ==================== FORMA DE PAGAMENTO ====================
+st.markdown("**Forma de pagamento (parcelas)**")
+st.caption(
+    "Defina as etapas e o percentual de cada uma. "
+    "A soma dos % deve dar 100%. Os valores em R$ aparecem no resumo abaixo."
+)
+
+base_pagamento = st.radio(
+    "Calcular parcelas sobre:",
+    options=["Valor à prazo (sem desconto)", "Valor à vista (com desconto)"],
+    index=0,
+    horizontal=True,
+)
+
+# Quantidade de parcelas configuráveis
+n_parcelas = st.number_input(
+    "Quantidade de etapas de pagamento",
+    min_value=1,
+    max_value=8,
+    value=3,
+    step=1,
+)
+
+# Padrão clássico: 30% / 30% / 40%
+_defaults_label = [
+    "Entrada (ato do pedido)",
+    "No embarque",
+    "Faturado (após análise)",
+    "Parcela 4",
+    "Parcela 5",
+    "Parcela 6",
+    "Parcela 7",
+    "Parcela 8",
+]
+_defaults_pct = [30.0, 30.0, 40.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+parcelas_cfg = []  # lista de {label, pct}
+cols_parc = st.columns(min(int(n_parcelas), 4))
+for i in range(int(n_parcelas)):
+    with cols_parc[i % len(cols_parc)]:
+        lab = st.text_input(
+            f"Etapa {i+1} – nome",
+            value=_defaults_label[i] if i < len(_defaults_label) else f"Parcela {i+1}",
+            key=f"parc_lab_{i}",
+        )
+        pct = st.number_input(
+            f"Etapa {i+1} – %",
+            min_value=0.0,
+            max_value=100.0,
+            value=float(_defaults_pct[i]) if i < len(_defaults_pct) else 0.0,
+            step=1.0,
+            key=f"parc_pct_{i}",
+        )
+        parcelas_cfg.append({"label": lab, "pct": pct})
+
+soma_pct = sum(p["pct"] for p in parcelas_cfg)
+if abs(soma_pct - 100.0) > 0.05:
+    st.warning(f"A soma dos percentuais está em **{soma_pct:.1f}%** (ideal: 100%).")
+else:
+    st.success(f"Soma dos percentuais: **{soma_pct:.1f}%**")
+
 
 # ==================== CÁLCULOS ====================
 itens = []
@@ -337,6 +399,22 @@ total_geral = total_avista + frete_valor  # frete normalmente não entra no desc
 
 peso_total = tinfo.get("peso", 0) + binfo.get("peso", 0)
 
+# Base das parcelas: à prazo ou à vista (+ frete se houver)
+if base_pagamento.startswith("Valor à vista"):
+    base_parcela = total_avista + frete_valor
+else:
+    base_parcela = total_produtos + frete_valor
+
+parcelas_calc = []
+for p in parcelas_cfg:
+    if p["pct"] > 0:
+        valor_p = base_parcela * (p["pct"] / 100.0)
+        parcelas_calc.append({
+            "label": p["label"],
+            "pct": p["pct"],
+            "valor": valor_p,
+        })
+
 
 # ==================== RESUMO EM TEMPO REAL ====================
 st.subheader("4. Resumo do Orçamento")
@@ -350,8 +428,32 @@ c4.metric("Peso aprox.", f"{peso_total} kg")
 if frete_valor > 0:
     st.info(f"Frete: {format_brl(frete_valor)} → **Total geral: {format_brl(total_geral)}**")
 
+# Parcelas em tempo real
+if parcelas_calc:
+    st.markdown(
+        f"**Parcelas** (sobre {format_brl(base_parcela)} — "
+        f"{'à vista' if base_pagamento.startswith('Valor à vista') else 'à prazo'}"
+        f"{' + frete' if frete_valor > 0 else ''})"
+    )
+    cols_v = st.columns(min(len(parcelas_calc), 4))
+    for idx, p in enumerate(parcelas_calc):
+        with cols_v[idx % len(cols_v)]:
+            st.metric(
+                f"{p['label']} ({p['pct']:.0f}%)",
+                format_brl(p["valor"]),
+            )
+    # Tabela detalhada
+    df_parc = pd.DataFrame([
+        {
+            "Etapa": p["label"],
+            "%": f"{p['pct']:.1f}%",
+            "Valor": format_brl(p["valor"]),
+        }
+        for p in parcelas_calc
+    ])
+    st.dataframe(df_parc, use_container_width=True, hide_index=True)
+
 # Tabela de itens
-import pandas as pd
 df = pd.DataFrame([
     {
         "Descrição": i["descricao"],
@@ -419,6 +521,9 @@ dados_pdf = {
     # Lista completa: tanque, bacia, bomba, filtro + opcionais marcados
     "imagens": imagens_sel,
     "opcionais": opcionais_selecionados,
+    "parcelas": parcelas_calc,
+    "base_pagamento": base_pagamento,
+    "base_parcela": base_parcela,
 }
 
 col_btn1, col_btn2 = st.columns([1, 3])
