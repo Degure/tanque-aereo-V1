@@ -233,7 +233,7 @@ BOMBAS: Dict[str, float] = {
 # ==================== FILTROS ====================
 FILTROS: Dict[str, float] = {
     "SEM FILTRO": 0.0,
-    "Filtro de 1 polegada para Filtragem de Partículas Gp Company": 285.30,
+    "Filtro de 1 polegada para Filtragem de Partículas Gp Company": 350.00,
     "FOGUETINHO DESIDATRADOR 60LPM": 2190.0,
     "FOGUETINHO DESIDATRADOR 100LPM": 4190.0,
     "FOGUETINHO DESIDATRADOR 150LPM": 5190.0,
