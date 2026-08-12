@@ -254,13 +254,20 @@ ELEMENTOS: Dict[str, float] = {
 OPCIONAIS: Dict[str, Dict[str, Any]] = {
     "DESCARGA SELADA 4''": {
         "preco": 3500.0,
-        "descricao": (
-            "Abastecimento do combustível no tanque realizado por baixo, "
-            "pela válvula. Caso não opte por esta forma, o abastecimento "
-            "será pela parte superior do tanque."
-        ),
-        "imagem": None,  # ex: "imagens_produtos/opcionais/descarga_selada.jpg"
+        "descricao": "Abastecimento do combustível no tanque realizado por baixo...",
+        "imagem": imagens_produtos/opcionais/opcional-descarga selada 4''.jpeg,  # ou "imagens_produtos/opcionais/descarga.jpg"
     },
+    "ESCADA EXTERNA": {
+        "preco": 1200.0,
+        "descricao": "Escada metálica externa para acesso ao topo do tanque.",
+        "imagem": None,
+    },
+    "KIT CONEXÕES ESPECIAIS": {
+        "preco": 890.0,
+        "descricao": "Conjunto de conexões e registros extras sob medida.",
+        "imagem": None,
+    },
+},
     # Adicione mais opcionais abaixo, no mesmo formato:
     # "NOME DO OPCIONAL": {
     #     "preco": 0.0,
