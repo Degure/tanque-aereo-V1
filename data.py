@@ -255,7 +255,7 @@ OPCIONAIS: Dict[str, Dict[str, Any]] = {
     "DESCARGA SELADA 4''": {
         "preco": 3500.0,
         "descricao": "Abastecimento do combustível no tanque realizado por baixo...",
-        "imagem": imagens_produtos/opcionais/opcional-descarga selada 4''.jpeg,  # ou "imagens_produtos/opcionais/descarga.jpg"
+        "imagem": "imagens_produtos/opcionais/opcional-descarga selada 4''.jpeg",  # ou "imagens_produtos/opcionais/descarga.jpg"
     },
     "ESCADA EXTERNA": {
         "preco": 1200.0,
