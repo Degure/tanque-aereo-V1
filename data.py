@@ -233,7 +233,6 @@ BOMBAS: Dict[str, float] = {
 # ==================== FILTROS ====================
 FILTROS: Dict[str, float] = {
     "SEM FILTRO": 0.0,
-    "Filtro de 1 polegada para Filtragem de Partículas Gp Company": 350.00,
     "FOGUETINHO DESIDATRADOR 60LPM": 2190.0,
     "FOGUETINHO DESIDATRADOR 100LPM": 4190.0,
     "FOGUETINHO DESIDATRADOR 150LPM": 5190.0,
@@ -368,7 +367,6 @@ IMAGEM_POR_BOMBA = {
 # --- Filtros ---
 IMAGEM_POR_FILTRO = {
     "SEM FILTRO": None,
-    "Filtro de 1 polegada para Filtragem de Partículas Gp Company": "imagens_produtos/filtros/5332-1-filtro de linha.jpg",
     "FOGUETINHO DESIDATRADOR 60LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR 100LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR 150LPM": "imagens_produtos/filtros/filtro_padrao.png",
@@ -400,19 +398,19 @@ def get_imagem_filtro(filtro_key: str):
 def get_imagens_selecionadas(tanque_key: str, bacia_key: str, bomba_key: str, filtro_key: str):
     """
     Retorna lista de (titulo, caminho) das imagens dos produtos selecionados.
-    Usado no preview da tela e no PDF.
+    Títulos completos — sem corte — para legenda na tela e no PDF.
     """
     imgs = []
     t = get_imagem_tanque(tanque_key)
     if t:
-        imgs.append(("Tanque " + tanque_key, t))
+        imgs.append((f"Tanque {tanque_key}", t))
     b = get_imagem_bacia(bacia_key)
     if b:
-        imgs.append(("Bacia " + bacia_key, b))
+        imgs.append((f"Bacia {bacia_key}", b))
     bo = get_imagem_bomba(bomba_key)
     if bo:
-        imgs.append((bomba_key[:40], bo))
+        imgs.append((bomba_key, bo))  # nome completo da bomba
     f = get_imagem_filtro(filtro_key)
     if f:
-        imgs.append((filtro_key[:40], f))
+        imgs.append((filtro_key, f))  # nome completo do filtro
     return imgs
