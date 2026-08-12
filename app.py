@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from typing import List
 
 from data import (
-    TANQUES, BACIAS, BOMBAS, FILTROS, ELEMENTOS,
+    TANQUES, BACIAS, BOMBAS, FILTROS, ELEMENTOS, OPCIONAIS,
     EMPRESA, VENDEDORES_INICIAL,
     get_imagem_tanque, get_imagens_selecionadas,
 )
@@ -183,8 +183,38 @@ if imagens_existentes:
 else:
     st.caption("Nenhuma imagem encontrada. Coloque fotos em `imagens_produtos/tanques|bacias|bombas|filtros/`.")
 
-# Itens extras manuais
-st.markdown("**Itens adicionais (opcional)**")
+# ==================== PRODUTOS OPCIONAIS (checkbox) ====================
+st.markdown("**Produtos opcionais**")
+st.caption("Marque os itens que deseja incluir no orçamento. O preço pode ser ajustado.")
+
+opcionais_selecionados = {}  # nome -> preco final
+if OPCIONAIS:
+    for nome_op, info_op in OPCIONAIS.items():
+        col_ck, col_pr, col_ds = st.columns([2, 1, 3])
+        with col_ck:
+            marcado = st.checkbox(nome_op, value=False, key=f"opt_{nome_op}")
+        with col_pr:
+            preco_op = st.number_input(
+                "R$",
+                value=float(info_op.get("preco", 0)),
+                min_value=0.0,
+                step=50.0,
+                key=f"opt_preco_{nome_op}",
+                label_visibility="collapsed",
+            )
+        with col_ds:
+            st.caption(info_op.get("descricao", "")[:120] + ("..." if len(info_op.get("descricao", "")) > 120 else ""))
+        if marcado:
+            opcionais_selecionados[nome_op] = {
+                "preco": preco_op,
+                "descricao": info_op.get("descricao", ""),
+                "imagem": info_op.get("imagem"),
+            }
+else:
+    st.caption("Nenhum opcional cadastrado em data.py")
+
+# Item extra livre (fora da lista de opcionais)
+st.markdown("**Item avulso (texto livre)**")
 extra_desc = st.text_input("Descrição do item extra", value="")
 extra_qtd = st.number_input("Qtd extra", min_value=0, value=0, step=1)
 extra_valor = st.number_input("Valor unitário extra (R$)", min_value=0.0, value=0.0, step=10.0)
@@ -261,7 +291,19 @@ if elemento_key != "SEM ELEMENTO" or preco_elemento > 0:
         "total": preco_elemento,
     })
 
-# Extra
+# Opcionais marcados (checkbox)
+for nome_op, info_op in opcionais_selecionados.items():
+    desc_op = nome_op
+    if info_op.get("descricao"):
+        desc_op = f"{nome_op} – {info_op['descricao'][:80]}"
+    itens.append({
+        "descricao": f"OPCIONAL: {desc_op}",
+        "qtd": 1,
+        "unitario": info_op["preco"],
+        "total": info_op["preco"],
+    })
+
+# Item avulso (texto livre)
 if extra_qtd > 0 and extra_desc.strip():
     itens.append({
         "descricao": extra_desc.strip(),
@@ -357,6 +399,7 @@ dados_pdf = {
     "obs": obs_gerais,
     "imagem_produto": get_imagem_tanque(tanque_key),
     "imagens": get_imagens_selecionadas(tanque_key, bacia_key, bomba_key, filtro_key),
+    "opcionais": opcionais_selecionados,
 }
 
 col_btn1, col_btn2 = st.columns([1, 3])
