@@ -203,7 +203,9 @@ if OPCIONAIS:
                 label_visibility="collapsed",
             )
         with col_ds:
-            st.caption(info_op.get("descricao", "")[:120] + ("..." if len(info_op.get("descricao", "")) > 120 else ""))
+            # Descrição completa do opcional (sem corte)
+            if info_op.get("descricao"):
+                st.caption(info_op["descricao"])
         if marcado:
             opcionais_selecionados[nome_op] = {
                 "preco": preco_op,
@@ -291,13 +293,14 @@ if elemento_key != "SEM ELEMENTO" or preco_elemento > 0:
         "total": preco_elemento,
     })
 
-# Opcionais marcados (checkbox)
+# Opcionais marcados (checkbox) — descrição completa, sem corte
 for nome_op, info_op in opcionais_selecionados.items():
-    desc_op = nome_op
     if info_op.get("descricao"):
-        desc_op = f"{nome_op} – {info_op['descricao'][:80]}"
+        desc_op = f"OPCIONAL: {nome_op} – {info_op['descricao']}"
+    else:
+        desc_op = f"OPCIONAL: {nome_op}"
     itens.append({
-        "descricao": f"OPCIONAL: {desc_op}",
+        "descricao": desc_op,
         "qtd": 1,
         "unitario": info_op["preco"],
         "total": info_op["preco"],
