@@ -81,10 +81,15 @@ def _grade_imagens(imagens: list, styles, max_total_width: float = 180 * mm, max
         img = _imagem_responsiva(path, cell_w - 2 * mm, max_h)
         if img is None:
             continue
-        legenda = Paragraph(
-            f"<font size='6.5'><b>{titulo[:32]}</b></font>",
-            styles["CorpoPequeno"],
+        # Nome completo do produto — Paragraph quebra linha automaticamente se for longo
+        estilo_legenda = ParagraphStyle(
+            name="LegendaImg",
+            parent=styles["CorpoPequeno"],
+            fontSize=6.5,
+            alignment=TA_CENTER,
+            leading=8,
         )
+        legenda = Paragraph(f"<b>{titulo}</b>", estilo_legenda)
         cell = Table([[img], [legenda]], colWidths=[cell_w])
         cell.setStyle(TableStyle([
             ("ALIGN", (0, 0), (-1, -1), "CENTER"),
