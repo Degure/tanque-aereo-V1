@@ -267,7 +267,7 @@ OPCIONAIS: Dict[str, Dict[str, Any]] = {
         "descricao": "Conjunto de conexões e registros extras sob medida.",
         "imagem": None,
     },
-},
+    
     # Adicione mais opcionais abaixo, no mesmo formato:
     # "NOME DO OPCIONAL": {
     #     "preco": 0.0,
