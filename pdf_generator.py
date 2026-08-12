@@ -71,10 +71,13 @@ def _grade_imagens(imagens: list, styles, max_total_width: float = 180 * mm, max
     if not validas:
         return []
 
-    n = min(len(validas), 4)
+    # Até 5 imagens (tanque, bacia, bomba, filtro + opcional)
+    n = min(len(validas), 5)
     validas = validas[:n]
-    gap = 3 * mm
+    gap = 2.5 * mm
     cell_w = (max_total_width - gap * (n - 1)) / n
+    if n >= 4:
+        max_h = min(max_h, 36 * mm)
 
     cells = []
     for titulo, path in validas:
