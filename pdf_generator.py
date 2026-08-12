@@ -552,7 +552,7 @@ def gerar_pdf(dados: Dict[str, Any], modo: str = "completa") -> bytes:
         story.append(Paragraph("1. CONDIÇÕES COMERCIAIS", styles["Subtitulo"]))
         story.append(Paragraph(
             "Os valores apresentados são para pagamento nas condições abaixo. "
-            "Caso o cliente não seja contribuinte de ICMS, poderá ser adicionado o diferencial de alíquota conforme o estado de destino.",
+            "<b>Caso o cliente não seja contribuinte de ICMS, poderá ser adicionado o diferencial de alíquota conforme o estado de destino.</b>",
             styles["Corpo"]
         ))
 
@@ -634,10 +634,10 @@ def gerar_pdf(dados: Dict[str, Any], modo: str = "completa") -> bytes:
         story.append(Paragraph("• Transporte até o local combinado (quando incluso no valor ou frete contratado).", styles["ItemLista"]))
 
         story.append(Paragraph("<b>Do Comprador:</b>", styles["CorpoPequeno"]))
-        story.append(Paragraph("• Acesso rodoviário livre e desimpedido para descarga.", styles["ItemLista"]))
-        story.append(Paragraph("• Descarregamento com guincho Munck por conta do cliente.", styles["ItemLista"]))
-        story.append(Paragraph("• Preparação da base de apoio (concreto ou estrutura adequada).", styles["ItemLista"]))
-        story.append(Paragraph("• Obtenção de licenças e alvarás locais, quando exigidos.", styles["ItemLista"]))
+        story.append(Paragraph("<font size='9'><b>• Acesso rodoviário livre e desimpedido para descarga.</b></font>", styles["ItemLista"]))
+        story.append(Paragraph("<font size='9'><b>• Descarregamento com guincho Munck por conta do cliente.</b></font>", styles["ItemLista"]))
+        story.append(Paragraph("<font size='9'><b>• Preparação da base de apoio (concreto ou estrutura adequada).</b></font>", styles["ItemLista"]))
+        story.append(Paragraph("<font size='9'><b>• Obtenção de licenças e alvarás locais, quando exigidos.</b></font>", styles["ItemLista"]))
 
         story.append(Paragraph("4. OBSERVAÇÕES GERAIS / CLÁUSULAS", styles["Subtitulo"]))
         story.append(Paragraph(
