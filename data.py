@@ -249,6 +249,27 @@ ELEMENTOS: Dict[str, float] = {
     "ELEMENTO FILTRANTE 1'' DESIDATRADOR - 12UN": 429.0,
 }
 
+# ==================== PRODUTOS OPCIONAIS ====================
+# Marque com checkbox na tela. Cada item pode ter preço editável.
+# "imagem": caminho opcional da foto (None se não tiver)
+OPCIONAIS: Dict[str, Dict[str, Any]] = {
+    "DESCARGA SELADA 4''": {
+        "preco": 3500.0,
+        "descricao": (
+            "Abastecimento do combustível no tanque realizado por baixo, "
+            "pela válvula. Caso não opte por esta forma, o abastecimento "
+            "será pela parte superior do tanque."
+        ),
+        "imagem": None,  # ex: "imagens_produtos/opcionais/descarga_selada.jpg"
+    },
+    # Adicione mais opcionais abaixo, no mesmo formato:
+    # "NOME DO OPCIONAL": {
+    #     "preco": 0.0,
+    #     "descricao": "Texto explicativo que aparece no PDF.",
+    #     "imagem": "imagens_produtos/opcionais/foto.jpg",
+    # },
+}
+
 # ==================== VENDEDORES (inicial) ====================
 VENDEDORES_INICIAL: List[str] = [
     "Elvio Martins",
