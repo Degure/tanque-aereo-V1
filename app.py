@@ -169,20 +169,6 @@ with col_e:
         key=f"p_elem_{elemento_key}",
     )
 
-# Preview das imagens de todos os produtos selecionados (tanque, bacia, bomba, filtro)
-st.markdown("**Imagens dos produtos selecionados**")
-imagens_sel = get_imagens_selecionadas(tanque_key, bacia_key, bomba_key, filtro_key)
-imagens_existentes = [(titulo, path) for titulo, path in imagens_sel if path and os.path.exists(path)]
-
-if imagens_existentes:
-    cols_img = st.columns(min(len(imagens_existentes), 4))
-    for idx, (titulo, path) in enumerate(imagens_existentes):
-        with cols_img[idx % len(cols_img)]:
-            st.image(path, use_container_width=True, caption=titulo)
-    st.caption("* Imagens meramente ilustrativas – GP Company · entram no PDF da proposta")
-else:
-    st.caption("Nenhuma imagem encontrada. Coloque fotos em `imagens_produtos/tanques|bacias|bombas|filtros/`.")
-
 # ==================== PRODUTOS OPCIONAIS (checkbox) ====================
 st.markdown("**Produtos opcionais**")
 st.caption("Marque os itens que deseja incluir no orçamento. O preço pode ser ajustado.")
@@ -203,9 +189,14 @@ if OPCIONAIS:
                 label_visibility="collapsed",
             )
         with col_ds:
-            # Descrição completa do opcional (sem corte)
             if info_op.get("descricao"):
                 st.caption(info_op["descricao"])
+            # Mini preview da foto do opcional (se existir)
+            img_op = info_op.get("imagem")
+            if img_op and os.path.exists(img_op):
+                st.image(img_op, width=120)
+            elif img_op:
+                st.caption(f"⚠️ Imagem não encontrada: {img_op}")
         if marcado:
             opcionais_selecionados[nome_op] = {
                 "preco": preco_op,
@@ -220,6 +211,30 @@ st.markdown("**Item avulso (texto livre)**")
 extra_desc = st.text_input("Descrição do item extra", value="")
 extra_qtd = st.number_input("Qtd extra", min_value=0, value=0, step=1)
 extra_valor = st.number_input("Valor unitário extra (R$)", min_value=0.0, value=0.0, step=10.0)
+
+# ==================== GALERIA DE IMAGENS (produtos + opcionais marcados) ====================
+st.markdown("**Imagens dos produtos selecionados**")
+imagens_sel = get_imagens_selecionadas(tanque_key, bacia_key, bomba_key, filtro_key)
+
+# Inclui fotos dos opcionais marcados
+for nome_op, info_op in opcionais_selecionados.items():
+    img_op = info_op.get("imagem")
+    if img_op:
+        imagens_sel.append((f"Opcional: {nome_op}", img_op))
+
+imagens_existentes = [(titulo, path) for titulo, path in imagens_sel if path and os.path.exists(path)]
+
+if imagens_existentes:
+    cols_img = st.columns(min(len(imagens_existentes), 4))
+    for idx, (titulo, path) in enumerate(imagens_existentes):
+        with cols_img[idx % len(cols_img)]:
+            st.image(path, use_container_width=True, caption=titulo)
+    st.caption("* Imagens meramente ilustrativas – GP Company · entram no PDF da proposta")
+else:
+    st.caption(
+        "Nenhuma imagem encontrada. Coloque fotos em "
+        "`imagens_produtos/tanques|bacias|bombas|filtros|opcionais/`."
+    )
 
 
 # ==================== DESCONTOS E FRETE ====================
@@ -401,7 +416,8 @@ dados_pdf = {
     "fluido": fluido,
     "obs": obs_gerais,
     "imagem_produto": get_imagem_tanque(tanque_key),
-    "imagens": get_imagens_selecionadas(tanque_key, bacia_key, bomba_key, filtro_key),
+    # Lista completa: tanque, bacia, bomba, filtro + opcionais marcados
+    "imagens": imagens_sel,
     "opcionais": opcionais_selecionados,
 }
 
