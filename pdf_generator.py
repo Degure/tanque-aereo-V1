@@ -588,10 +588,10 @@ def gerar_pdf(dados: Dict[str, Any], modo: str = "completa") -> bytes:
         story.append(Paragraph("• Transporte até o local combinado (quando incluso no valor ou frete contratado).", styles["ItemLista"]))
 
         story.append(Paragraph("<b>Do Comprador:</b>", styles["CorpoPequeno"]))
-        story.append(Paragraph("<b>• Acesso rodoviário livre e desimpedido para descarga.</b>", styles["ItemLista"]))
-        story.append(Paragraph("<b>• Descarregamento com guincho Munck por conta do cliente.</b> ", styles["ItemLista"]))
-        story.append(Paragraph("<b>• Preparação da base de apoio (concreto ou estrutura adequada).</b>", styles["ItemLista"]))
-        story.append(Paragraph("<b>• Obtenção de licenças e alvarás locais, quando exigidos.</b>", styles["ItemLista"]))
+        story.append(Paragraph("<font size='11'><b>• Acesso rodoviário livre e desimpedido para descarga.</b></font>", styles["ItemLista"]))
+        story.append(Paragraph("<font size='11'><b>• Descarregamento com guincho Munck por conta do cliente.</b></font>", styles["ItemLista"]))
+        story.append(Paragraph("<font size='11'><b>• Preparação da base de apoio (concreto ou estrutura adequada).</b></font>", styles["ItemLista"]))
+        story.append(Paragraph("<font size='11'><b>• Obtenção de licenças e alvarás locais, quando exigidos.</b></font>", styles["ItemLista"]))
 
         story.append(Paragraph("4. OBSERVAÇÕES GERAIS / CLÁUSULAS", styles["Subtitulo"]))
         story.append(Paragraph(
