@@ -552,14 +552,57 @@ def gerar_pdf(dados: Dict[str, Any], modo: str = "completa") -> bytes:
         story.append(Paragraph("1. CONDIÇÕES COMERCIAIS", styles["Subtitulo"]))
         story.append(Paragraph(
             "Os valores apresentados são para pagamento nas condições abaixo. "
-            "<b>Caso o cliente não seja contribuinte de ICMS, poderá ser adicionado o diferencial de alíquota conforme o estado de destino.</b>",
+            "Caso o cliente não seja contribuinte de ICMS, poderá ser adicionado o diferencial de alíquota conforme o estado de destino.",
             styles["Corpo"]
         ))
-        story.append(Paragraph(
-            "<b>Forma de pagamento sugerida:</b> 30% de entrada no ato do pedido + 30% no embarque + 40% faturado mediante análise financeira e aprovação de cadastro. "
-            "Alternativamente: parcelamento no cartão de crédito em até 6x (sujeito a juros da operadora).",
-            styles["Corpo"]
-        ))
+
+        # Forma de pagamento dinâmica (parcelas definidas pelo vendedor)
+        parcelas = dados.get("parcelas") or []
+        base_parc = dados.get("base_parcela", dados.get("total_produtos", 0))
+        if parcelas:
+            story.append(Paragraph(
+                f"<b>Forma de pagamento:</b> (sobre {format_brl(base_parc)})",
+                styles["Corpo"],
+            ))
+            rows_p = [[
+                Paragraph("<b>Etapa</b>", styles["CorpoPequeno"]),
+                Paragraph("<b>%</b>", styles["CorpoPequeno"]),
+                Paragraph("<b>Valor</b>", styles["CorpoPequeno"]),
+            ]]
+            for p in parcelas:
+                rows_p.append([
+                    Paragraph(str(p.get("label", "")), styles["CorpoPequeno"]),
+                    Paragraph(f"{p.get('pct', 0):.1f}%", styles["CorpoPequeno"]),
+                    Paragraph(format_brl(p.get("valor", 0)), styles["CorpoPequeno"]),
+                ])
+            t_parc = Table(rows_p, colWidths=[90*mm, 30*mm, 50*mm])
+            t_parc.setStyle(TableStyle([
+                ("BACKGROUND", (0, 0), (-1, 0), AZUL_ESCURO),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("BOX", (0, 0), (-1, -1), 0.6, AZUL_ESCURO),
+                ("INNERGRID", (0, 0), (-1, -1), 0.3, CINZA_BORDA),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, CINZA_CLARO]),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("ALIGN", (1, 0), (-1, -1), "CENTER"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, -1), 3),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+            ]))
+            story.append(t_parc)
+            story.append(Spacer(1, 2*mm))
+            story.append(Paragraph(
+                "Alternativamente: parcelamento no cartão de crédito em até 6x (sujeito a juros da operadora).",
+                styles["Corpo"],
+            ))
+        else:
+            story.append(Paragraph(
+                "<b>Forma de pagamento sugerida:</b> 30% de entrada no ato do pedido + 30% no embarque + 40% faturado "
+                "mediante análise financeira e aprovação de cadastro. "
+                "Alternativamente: parcelamento no cartão de crédito em até 6x (sujeito a juros da operadora).",
+                styles["Corpo"],
+            ))
+
         story.append(Paragraph(
             f"<b>Prazo de fabricação:</b> {EMPRESA['prazo_fabricacao']} após confirmação do pagamento da entrada e formalização do pedido.",
             styles["Corpo"]
@@ -591,10 +634,10 @@ def gerar_pdf(dados: Dict[str, Any], modo: str = "completa") -> bytes:
         story.append(Paragraph("• Transporte até o local combinado (quando incluso no valor ou frete contratado).", styles["ItemLista"]))
 
         story.append(Paragraph("<b>Do Comprador:</b>", styles["CorpoPequeno"]))
-        story.append(Paragraph("<font size='9'><b>• Acesso rodoviário livre e desimpedido para descarga.</b></font>", styles["ItemLista"]))
-        story.append(Paragraph("<font size='9'><b>• Descarregamento com guincho Munck por conta do cliente.</b></font>", styles["ItemLista"]))
-        story.append(Paragraph("<font size='9'><b>• Preparação da base de apoio (concreto ou estrutura adequada).</b></font>", styles["ItemLista"]))
-        story.append(Paragraph("<font size='9'><b>• Obtenção de licenças e alvarás locais, quando exigidos.</b></font>", styles["ItemLista"]))
+        story.append(Paragraph("• Acesso rodoviário livre e desimpedido para descarga.", styles["ItemLista"]))
+        story.append(Paragraph("• Descarregamento com guincho Munck por conta do cliente.", styles["ItemLista"]))
+        story.append(Paragraph("• Preparação da base de apoio (concreto ou estrutura adequada).", styles["ItemLista"]))
+        story.append(Paragraph("• Obtenção de licenças e alvarás locais, quando exigidos.", styles["ItemLista"]))
 
         story.append(Paragraph("4. OBSERVAÇÕES GERAIS / CLÁUSULAS", styles["Subtitulo"]))
         story.append(Paragraph(
