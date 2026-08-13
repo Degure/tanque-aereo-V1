@@ -233,7 +233,7 @@ BOMBAS: Dict[str, float] = {
 # ==================== FILTROS ====================
 FILTROS: Dict[str, float] = {
     "SEM FILTRO": 0.0,
-    "Filtro de 1 polegada para Filtragem de Partículas Gp Company": 350.00,
+    "Filtro de 1'' para Filtragem de Partículas Gp Company": 350.00,
     "FOGUETINHO DESIDATRADOR 60LPM": 2190.0,
     "FOGUETINHO DESIDATRADOR 100LPM": 4190.0,
     "FOGUETINHO DESIDATRADOR 150LPM": 5190.0,
@@ -287,7 +287,8 @@ EMPRESA = {
     "cnpj": "21.463.174/0002-41",
     "telefone": "",  # preencher se tiver
     "email": "",
-    "site": "",
+    "site": "https://www.casadofrentista.com.br",
+    "whatsapp": "",  # só números com DDI, ex: 5547999999999
     "ncm": "7309.90.00",
     "norma": "NBR 15.461",
     "garantia_meses": 6,
@@ -303,6 +304,160 @@ TEXTOS = {
     "temperatura": "Ambiente",
     "fluido_padrao": "Diesel",
 }
+
+# Templates rápidos (preenche seleções na tela)
+TEMPLATES = {
+    "— Manual (sem template) —": None,
+    "Frota padrão 10.000L + Bacia": {
+        "tanque": "10.000L",
+        "bacia": "10.000L",
+        "bomba": "BOMBA ABASTECIMENTO 60LPM - 220V",
+        "filtro": "SEM FILTRO",
+        "elemento": "SEM ELEMENTO",
+    },
+    "Agro 20.000L + Bacia": {
+        "tanque": "20.000L",
+        "bacia": "20.000L",
+        "bomba": "BOMBA ABASTECIMENTO 60LPM - 220V",
+        "filtro": "FOGUETINHO DESIDATRADOR 100LPM",
+        "elemento": "SEM ELEMENTO",
+    },
+    "Compacto 5.000L + Bacia": {
+        "tanque": "5.000L",
+        "bacia": "5.000L",
+        "bomba": "SEM BOMBA",
+        "filtro": "SEM FILTRO",
+        "elemento": "SEM ELEMENTO",
+    },
+}
+
+# Ordem alinhada à tabela ICMS interestadual 2025 (fiscal.io)
+UFS_BRASIL = [
+    "AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS",
+    "MG", "PA", "PB", "PR", "PE", "PI", "RN", "RS", "RJ", "RO", "RR", "SC",
+    "SP", "SE", "TO",
+]
+
+# Empresa em Araquari-SC
+UF_ORIGEM_PADRAO = "SC"
+
+# Alíquota interna (mesmo estado) — diagonal da tabela ICMS 2025
+ICMS_INTERNA = {
+    "AC": 19.0, "AL": 19.0, "AM": 20.0, "AP": 18.0, "BA": 20.5, "CE": 20.0,
+    "DF": 20.0, "ES": 17.0, "GO": 19.0, "MA": 22.0, "MT": 17.0, "MS": 17.0,
+    "MG": 18.0, "PA": 19.0, "PB": 20.0, "PR": 19.5, "PE": 20.5, "PI": 21.0,
+    "RN": 18.0, "RS": 17.0, "RJ": 20.0, "RO": 19.5, "RR": 20.0, "SC": 17.0,
+    "SP": 18.0, "SE": 19.0, "TO": 20.0,
+}
+
+# Matriz interestadual completa 27×27 — Tabela Alíquota ICMS 2025 (fiscal.io)
+# ICMS_MATRIZ[origem][destino] = alíquota %  |  diagonal = interna
+_UFS = UFS_BRASIL
+_ROWS = {
+    "AC": [19, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "AL": [12, 19, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "AM": [12, 12, 20, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "AP": [12, 12, 12, 18, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "BA": [12, 12, 12, 12, 20.5, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "CE": [12, 12, 12, 12, 12, 20, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "DF": [12, 12, 12, 12, 12, 12, 20, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "ES": [12, 12, 12, 12, 12, 12, 12, 17, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "GO": [12, 12, 12, 12, 12, 12, 12, 12, 19, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "MA": [12, 12, 12, 12, 12, 12, 12, 12, 12, 22, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "MT": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 17, 7, 7, 7, 7, 7, 12, 7, 7, 7, 12, 7, 7, 12, 7, 12, 7],
+    "MS": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 17, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "MG": [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 18, 7, 12, 7, 7, 7, 12, 7, 7, 7, 12, 7, 12, 7, 7],
+    "PA": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 19, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "PB": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 20, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "PR": [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 12, 7, 7, 19.5, 7, 7, 7, 12, 12, 7, 7, 12, 7, 12, 7],
+    "PE": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 20.5, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "PI": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 21, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+    "RN": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 18, 12, 12, 12, 12, 12, 12, 12, 12],
+    "RS": [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 12, 7, 7, 12, 7, 7, 7, 17, 7, 7, 12, 7, 12, 7, 7],
+    "RJ": [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 12, 7, 7, 12, 7, 7, 7, 12, 20, 7, 7, 12, 7, 12, 7],
+    "RO": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 19.5, 12, 12, 12, 12, 12],
+    "RR": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 20, 12, 12, 12, 12],
+    "SC": [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 12, 7, 7, 12, 7, 7, 7, 12, 12, 7, 7, 12, 7, 17, 7, 7, 7],
+    "SP": [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 12, 7, 7, 12, 7, 7, 7, 12, 7, 7, 12, 7, 18, 7, 7],
+    "SE": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 19, 12],
+    "TO": [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 20],
+}
+ICMS_MATRIZ = {o: {_UFS[i]: float(_ROWS[o][i]) for i in range(27)} for o in _UFS}
+
+
+def aliquota_interna(uf: str) -> float:
+    return float(ICMS_INTERNA.get(uf, 18.0))
+
+
+def aliquota_interestadual(origem: str, destino: str) -> float:
+    """Retorna alíquota da matriz ICMS 2025 (interna se origem == destino)."""
+    if not origem or not destino:
+        return 12.0
+    if origem in ICMS_MATRIZ and destino in ICMS_MATRIZ[origem]:
+        return float(ICMS_MATRIZ[origem][destino])
+    if origem == destino:
+        return aliquota_interna(destino)
+    return 12.0
+
+
+def calcular_difal(
+    valor_nf: float,
+    uf_destino: str,
+    uf_origem: str = UF_ORIGEM_PADRAO,
+) -> dict:
+    """
+    Estimativa comercial de DIFAL (produtos nacionais), matriz ICMS 2025 completa:
+
+        DIFAL = valor_NF × (alíquota interna DESTINO − alíquota interestadual origem→destino) / 100
+
+    Mesmo estado: DIFAL = 0. Orientativo — validar com o fiscal na NF.
+    """
+    resultado = {
+        "uf_origem": uf_origem or UF_ORIGEM_PADRAO,
+        "uf_destino": uf_destino or "",
+        "aliquota_interna_destino": 0.0,
+        "aliquota_interestadual": 0.0,
+        "diferenca_pp": 0.0,
+        "valor_base": float(valor_nf or 0),
+        "valor_difal": 0.0,
+        "aplica": False,
+        "observacao": "",
+    }
+    if not uf_destino or uf_destino in ("—", "-"):
+        resultado["observacao"] = "Informe a UF de destino para calcular o DIFAL."
+        return resultado
+
+    origem = uf_origem or UF_ORIGEM_PADRAO
+    interna = aliquota_interna(uf_destino)
+    inter = aliquota_interestadual(origem, uf_destino)
+    resultado["aliquota_interna_destino"] = interna
+    resultado["aliquota_interestadual"] = inter
+
+    if origem == uf_destino:
+        resultado["observacao"] = (
+            f"Operação interna ({origem}). Não há DIFAL interestadual. "
+            f"Alíquota interna: {interna:.1f}%."
+        )
+        return resultado
+
+    diff = interna - inter
+    resultado["diferenca_pp"] = diff
+    resultado["aplica"] = True
+    if diff <= 0:
+        resultado["valor_difal"] = 0.0
+        resultado["observacao"] = (
+            f"Diferença de alíquota ≤ 0 ({interna:.1f}% − {inter:.1f}%). DIFAL estimado zerado."
+        )
+        return resultado
+
+    valor_difal = float(valor_nf or 0) * (diff / 100.0)
+    resultado["valor_difal"] = round(valor_difal, 2)
+    resultado["observacao"] = (
+        f"DIFAL estimado = base × ({interna:.1f}% − {inter:.1f}%) = "
+        f"R$ {resultado['valor_difal']:,.2f}. "
+        f"Origem {origem} → destino {uf_destino}. Validar com o fiscal na NF."
+    ).replace(",", "X").replace(".", ",").replace("X", ".")
+    return resultado
 
 # ==================== IMAGENS DOS PRODUTOS ====================
 # Estrutura de pastas:
@@ -369,13 +524,14 @@ IMAGEM_POR_BOMBA = {
 # --- Filtros ---
 IMAGEM_POR_FILTRO = {
     "SEM FILTRO": None,
-    "Filtro de 1 polegada para Filtragem de Partículas Gp Company": "imagens_produtos/filtros/5332-1-filtro de linha.jpg",
+    "Filtro de 1'' para Filtragem de Partículas Gp Company": "imagens_produtos/filtros/5332-1-filtro de linha.jpg",
     "FOGUETINHO DESIDATRADOR 60LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR 100LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR 150LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO COALESCENTE 100LPM": "imagens_produtos/filtros/filtro_padrao.png",
     "FOGUETINHO DESIDATRADOR DUPLO 100LPM": "imagens_produtos/filtros/filtro_padrao.png",
 }
+
 
 def get_imagem_tanque(tanque_key: str):
     """Caminho da foto do tanque (ou padrão)."""
